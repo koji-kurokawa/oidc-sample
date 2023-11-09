@@ -1,0 +1,42 @@
+spring:
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:5432/try-oidc
+    username: postgres
+    password: postgres
+  liquibase:
+    enabled: true
+    change-log: classpath:db/changelog-master.yaml
+  security:
+    oauth2:
+      client:
+        registration:
+          cloudgear:
+#            client-name: 任意な名前(省略しても大丈夫)
+            client-id: 642c99ee-fabe-45ab-99fe-f5ce17167c37
+            client-secret: secret
+            authorization-grant-type: authorization_code
+            client-authentication-method: client_secret_post # 古めのSpring Securityならpostも指定可能
+            scope:
+              - openid
+              - profile
+              - email
+              - offline_access
+              - api:square:invite
+            redirect-uri: "{baseUrl}/oidc-callback"
+        provider:
+          cloudgear:
+            issuer-uri: https://accounts.beta.cloudgear.services/
+            user-name-attribute: name
+            user-email-attribute: sub
+
+Client:
+  postLoginUrl: "http://localhost:3000/callback"
+
+# Spring Securityのログ出力をデバッグに設定
+# APIにアクセスした人の情報が出力される
+logging:
+  level:
+    org:
+      springframework:
+        security: DEBUG

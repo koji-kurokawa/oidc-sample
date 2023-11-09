@@ -1,0 +1,58 @@
+databaseChangeLog:
+  - changeSet:
+      id: 1
+      author: tide
+      changes:
+        - createTable:
+            tableName: user
+            ifNotExists: true
+            columns:
+              - column:
+                  name: id
+                  type: serial
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: name
+                  type: varchar(50)
+                  constraints:
+                    nullable: false
+        - createTable:
+            tableName: token
+            ifNotExists: true
+            columns:
+              - column:
+                  name: id
+                  type: serial
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: user_id
+                  type: serial
+                  constraints:
+                    nullable: false
+              - column:
+                  name: access_token
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: refresh_token
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+        - addForeignKeyConstraint:
+            baseTableName: token
+            baseColumnNames: user_id
+            referencedTableName: user
+            referencedColumnNames: id
+            constraintName:  fk_user_token
+            deferrable:  false
+            initiallyDeferred:  false
+            onUpdate: NO ACTION
+            onDelete: CASCADE
+            validate: true
